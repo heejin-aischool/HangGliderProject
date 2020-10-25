@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel = "stylesheet" href='{% static "result.css" %}' type="text/css">
+</head>
+<body onload="onload();">
+    {% comment %} webcam {% endcomment %}
+    <video class="webcam" id="myVidPlayer" controls autoplay width="1280" height="720"></video>
+    <script type="text/javascript">
+        //Selector for your <video> element
+        const video = document.querySelector('#myVidPlayer');
+
+        //Core
+        window.navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                video.onloadedmetadata = (e) => {
+                    video.play();
+                };
+            })
+            .catch( () => {
+                alert('You have give browser the permission to run Webcam and mic ;( ');
+            });
+    </script>
+
+    {% comment %} sign_language_video {% endcomment %}
+    <video class="sign_language" id="idle_video" muted width="1280" height="720" onended="onVideoEnded();"></video>
+    <script type="text/javascript">
+        var video_list      = {{q|safe}};
+        var video_index     = 0;
+        var video_player    = null;
+
+        function onload(){
+            console.log("body loaded");
+            video_player = document.getElementById("idle_video");
+            video_player.setAttribute("src", video_list[video_index]);
+            video_player.play();
+        }
+
+        function onVideoEnded(){
+            console.log("video ended");
+            if(video_index < video_list.length - 1){
+                video_index++;
+            }
+            else {
+                video_index = 0;
+                myFunction();
+                return
+            }
+            video_player.setAttribute("src", video_list[video_index]);
+            video_player.play();
+        }
+    </script>
+
+    {% comment %} 부가 기능 {% endcomment %}
+    <div class="content" id="sub" >
+        <h1>속기</h1>
+    </div>
+    <button id="myBtn" onclick="myFunction2()">자막 보기</button>
+    <script>
+        function myFunction2() {
+        var x = document.getElementById("sub");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+        }
+    </script>
+
+    <button id="myBtn" onclick="myFunction()">수화 보기</button>
+    <script>
+        function myFunction() {
+        var x = document.getElementById("idle_video");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+        }
+    </script>
+</body>
+</html>
