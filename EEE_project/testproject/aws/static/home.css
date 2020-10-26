@@ -76,12 +76,13 @@ a {
     position: relative;
 }
 
-.wraaper .input-data input{
+.wrapper .input-data input{
     height: 100%;
     width: 100%;
     border: none;
     font-size: 17px;
     border-bottom: 2px solid silver;
+    outline: none;
 }
 
 .input-data input:focus ~ label,
